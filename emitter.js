@@ -4,7 +4,7 @@
  * Сделано задание на звездочку
  * Реализованы методы several и through
  */
-const isStar = true;
+const isStar = false;
 const events = {};
 
 /**
@@ -80,7 +80,18 @@ function getEmitter() {
          * @returns {Object} this
          */
         several: function (event, context, handler, times) {
-            console.info(event, context, handler, times);
+            if (times < 1) {
+                this.on(event, context, handler);
+            }
+
+            let count = 0;
+            this.on(event, context, () => {
+                count++;
+
+                if (count < times) {
+                    handler.call(context);
+                }
+            });
 
             return this;
         },
@@ -95,7 +106,18 @@ function getEmitter() {
          * @returns {Object} this
          */
         through: function (event, context, handler, frequency) {
-            console.info(event, context, handler, frequency);
+            if (frequency < 1) {
+                this.on(event, context, handler);
+            }
+
+            let count = 0;
+            this.on(event, context, () => {
+                count++;
+
+                if (count % frequency === 0) {
+                    handler.call(context);
+                }
+            });
 
             return this;
         }
