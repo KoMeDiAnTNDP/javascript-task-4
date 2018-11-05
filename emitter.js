@@ -39,7 +39,8 @@ function getEmitter() {
          */
         off: function (event, context) {
             Object.keys(events)
-                .filter(eventName => eventName === event || eventName.includes(`${event}.`))
+                .filter(eventName =>
+                    eventName === event || (new RegExp(`^${event}.`)).test(eventName))
                 .forEach(eventName => {
                     events[eventName] = events[eventName]
                         .filter(lecturer => lecturer.context !== context);
