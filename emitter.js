@@ -4,7 +4,8 @@
  * Сделано задание на звездочку
  * Реализованы методы several и through
  */
-const isStar = true;
+const isStar = false;
+const events = {};
 
 /**
  * Возвращает новый emitter
@@ -18,26 +19,55 @@ function getEmitter() {
          * @param {String} event
          * @param {Object} context
          * @param {Function} handler
+         * @returns {Object} this
          */
         on: function (event, context, handler) {
-            console.info(event, context, handler);
+            if (!events.hasOwnProperty(event)) {
+                events[event] = [];
+            }
+
+            events[event].push(({ context, handler }));
+
+            return this;
         },
 
         /**
          * Отписаться от события
          * @param {String} event
          * @param {Object} context
+         * @returns {Object} this
          */
         off: function (event, context) {
-            console.info(event, context);
+            Object.keys(events)
+                .filter(eventName => eventName === event || eventName.includes(`${event}.`))
+                .forEach(eventName => {
+                    events[eventName] = events[eventName]
+                        .filter(lecturer => lecturer.context !== context);
+                });
+
+            return this;
         },
 
         /**
          * Уведомить о событии
          * @param {String} event
+         * @returns {Object} this
          */
         emit: function (event) {
-            console.info(event);
+            const subEvents = event.split('.');
+
+            while (subEvents.length > 0) {
+                const curEvent = subEvents.join('.');
+
+                if (events.hasOwnProperty(curEvent)) {
+                    events[curEvent].forEach(student =>
+                        student.handler.call(student.context));
+                }
+
+                subEvents.pop();
+            }
+
+            return this;
         },
 
         /**
@@ -47,9 +77,12 @@ function getEmitter() {
          * @param {Object} context
          * @param {Function} handler
          * @param {Number} times – сколько раз получить уведомление
+         * @returns {Object} this
          */
         several: function (event, context, handler, times) {
             console.info(event, context, handler, times);
+
+            return this;
         },
 
         /**
@@ -59,9 +92,12 @@ function getEmitter() {
          * @param {Object} context
          * @param {Function} handler
          * @param {Number} frequency – как часто уведомлять
+         * @returns {Object} this
          */
         through: function (event, context, handler, frequency) {
             console.info(event, context, handler, frequency);
+
+            return this;
         }
     };
 }
