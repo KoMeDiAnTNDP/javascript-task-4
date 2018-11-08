@@ -4,14 +4,16 @@
  * Сделано задание на звездочку
  * Реализованы методы several и through
  */
-const isStar = false;
-const events = {};
+const isStar = true;
+
 
 /**
  * Возвращает новый emitter
  * @returns {Object}
  */
 function getEmitter() {
+    const events = {};
+
     return {
 
         /**
@@ -19,6 +21,9 @@ function getEmitter() {
          * @param {String} event
          * @param {Object} context
          * @param {Function} handler
+         * @param {Object} param
+         * @param {Number} param.times
+         * @param {Number} param.frequency
          * @returns {Object} this
          */
         on: function (event, context, handler) {
@@ -26,7 +31,9 @@ function getEmitter() {
                 events[event] = [];
             }
 
-            events[event].push(({ context, handler }));
+            events[event].push(
+                { context, handler }
+            );
 
             return this;
         },
@@ -86,9 +93,7 @@ function getEmitter() {
 
             let count = 0;
             this.on(event, context, () => {
-                count++;
-
-                if (count < times) {
+                if (count++ < times) {
                     handler.call(context);
                 }
             });
@@ -112,9 +117,7 @@ function getEmitter() {
 
             let count = 0;
             this.on(event, context, () => {
-                count++;
-
-                if (count % frequency === 0) {
+                if (count++ % frequency === 0) {
                     handler.call(context);
                 }
             });
