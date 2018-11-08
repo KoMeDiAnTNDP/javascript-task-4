@@ -21,9 +21,6 @@ function getEmitter() {
          * @param {String} event
          * @param {Object} context
          * @param {Function} handler
-         * @param {Object} param
-         * @param {Number} param.times
-         * @param {Number} param.frequency
          * @returns {Object} this
          */
         on: function (event, context, handler) {
